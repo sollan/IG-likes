@@ -34,11 +34,12 @@ try:
     time.sleep(4)
 except: 
     # verification needed
-    input("Manual verification; press any key when done") 
-    elem = browser.find_element_by_class_name('mt3GC')
-    button = elem.find_element_by_xpath("//button[@class='aOOlW   HoLwm ']")
-    button.click()
-    time.sleep(4)
+    # input("Manual verification; press any key when done") 
+    # elem = browser.find_element_by_class_name('mt3GC')
+    # button = elem.find_element_by_xpath("//button[@class='aOOlW   HoLwm ']")
+    # button.click()
+    # time.sleep(4)
+    pass
 
 # initialize working files
 links = []
@@ -47,64 +48,72 @@ num_liked = 0
 
 
 for tag in tags:
-    
-    # initialize save files
-    liked = []
-    liked_hashtag = []
-    when = []
 
-    browser.get('https://www.instagram.com/explore/tags/' + tag)
-    for i in range(5):
-        Pagelength = browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        time.sleep(4)
-        # time.sleep(5)
+    scroll = random.choice([0, 1])
 
-    elements = browser.find_elements_by_class_name('eLAPa')
+    if scroll == 0:
+        pass
 
-    # like recent posts
-    for i in range(9, len(elements)):
-        like = random.choices([0,1])
-        if like == [1]:
-            try:
-                clickPost(browser, i)
-                if manyLikes(browser):
-                    # time.sleep(5)
-                    time.sleep(3)
-                    closePost(browser)
-                    # time.sleep(4)
-                    time.sleep(3)
-                else:
-                    likePost(browser)
-                    # time.sleep(10)
-                    time.sleep(6)
-                    # write to file
-                    now = datetime.now()
-                    now_string = now.strftime("%d-%m-%Y-%H-%M-%S")
-                    when.append(now_string)
-                    liked_hashtag.append(tag)
-                    try:
-                        reportBlockAction(browser)
-                        print('blocked')
+    else:
+        # initialize save files
+        liked = []
+        liked_hashtag = []
+        when = []
+
+        browser.get('https://www.instagram.com/explore/tags/' + tag)
+        for i in range(5):
+            Pagelength = browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            time.sleep(4)
+            # time.sleep(5)
+
+        elements = browser.find_elements_by_class_name('eLAPa')
+
+        # like recent posts
+        for i in range(9, len(elements)):
+            like = random.choices([0,1])
+            if like == [1]:
+                try:
+                    clickPost(browser, i)
+                    if manyLikes(browser):
+                        # time.sleep(5)
+                        time.sleep(3)
+                        closePost(browser)
+                        # time.sleep(4)
+                        time.sleep(3)
+                    else:
+                        likePost(browser)
+                        # time.sleep(10)
+                        time.sleep(6)
+                        # write to file
                         now = datetime.now()
                         now_string = now.strftime("%d-%m-%Y-%H-%M-%S")
-                        df = pd.DataFrame(data={'link': liked, 'hashtag': liked_hashtag, 'when': when})
-                        df.to_csv('./liked_' + now_string +'.csv', sep=',',index=False)
-                        time.sleep(3000)
-                    except:
-                        closePost(browser)
-                        # time.sleep(1)
-                        posts = browser.find_elements_by_class_name('eLAPa')
-                        link = posts[i].find_element_by_xpath('..').get_attribute('href')
-                        liked.append(link)
-                        print(link, tag, num_liked)
-                        num_liked += 1
-            except IndexError:
-                pass
+                        when.append(now_string)
+                        liked_hashtag.append(tag)
+                        try:
+                            reportBlockAction(browser)
+                            print('blocked')
+                            now = datetime.now()
+                            now_string = now.strftime("%d-%m-%Y-%H-%M-%S")
+                            df = pd.DataFrame(data={'link': liked, 'hashtag': liked_hashtag, 'when': when})
+                            df.to_csv('./liked_' + now_string +'.csv', sep=',',index=False)
+                            time.sleep(3000)
+                        except:
+                            closePost(browser)
+                            # time.sleep(1)
+                            posts = browser.find_elements_by_class_name('eLAPa')
+                            link = posts[i].find_element_by_xpath('..').get_attribute('href')
+                            liked.append(link)
+                            print(link, tag, num_liked)
+                            num_liked += 1
+                except IndexError:
+                    pass
 
-    now = datetime.now()
-    now_string = now.strftime("%d-%m-%Y-%H-%M-%S")
-    df = pd.DataFrame(data={'link': liked, 'hashtag': liked_hashtag, 'when': when})
-    df.to_csv('./liked_' + now_string +'.csv', sep=',',index=False)
-                
-    # homepageRandomAction(browser)
-    time.sleep(random.randint(30,60*60*5))
+        now = datetime.now()
+        now_string = now.strftime("%d-%m-%Y-%H-%M-%S")
+        df = pd.DataFrame(data={'link': liked, 'hashtag': liked_hashtag, 'when': when})
+        df.to_csv('./liked_' + now_string +'.csv', sep=',',index=False)
+                    
+        # homepageRandomAction(browser)
+        wait = random.choice([60, 60*10, 60*30, 60*60, 60*60*3])
+        print('waiting for %i seconds before continuing' %wait)
+        time.sleep(wait)

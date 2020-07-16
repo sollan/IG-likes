@@ -27,7 +27,7 @@ def likeMoreOfThisUser(driver):
     posts[random.randint(1,6)].click()
     time.sleep(3)
     buttons = driver.find_element_by_class_name('wpO6b ')
-    like_button = buttons[0]
+    like_button = buttons[1]
     time.sleep(1)
     like_button.click()
     time.sleep(random.randint(2,4))
@@ -40,7 +40,7 @@ def likeMoreOfThisUser(driver):
 
 def savePost(driver):
     buttons = driver.find_elements_by_class_name('wpO6b ')
-    save_button = buttons[3]
+    save_button = buttons[4]
     save_button.click()
     time.sleep(random.randint(2,4))
 
